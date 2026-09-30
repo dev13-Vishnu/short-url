@@ -9,7 +9,7 @@ const staticRoute = require('./routes/staticRouter')
 const userRoute = require('./routes/user');
 
 const cookieParser = require("cookie-parser");
-const { restrictToLoggedInUserOnly, checkAuth } = require("./middleware/auth");
+const { checkAuth, checkForAuthentication, restrictTo } = require("./middleware/auth");
 
  
 const app = express();
@@ -29,10 +29,11 @@ app.set('views',path.resolve('./views'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieParser());
+app.use(checkForAuthentication); 
 
-app.use('/url',restrictToLoggedInUserOnly,urlRoute);
+app.use('/url',restrictTo(['NORMAL']),urlRoute);
 app.use('/user', userRoute);
-app.use('/',checkAuth,staticRoute);
+app.use('/',staticRoute);
 
 app.get('/test', async(req,res)=> {
 
